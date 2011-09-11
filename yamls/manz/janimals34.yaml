@@ -1,0 +1,33 @@
+--- 
+- - :note: 59
+    :beat: "00000000"
+  - :note: 67
+    :beat: "0"
+  - :note: 68
+    :beat: "000001"
+  - :note: 59
+    :beat: "1100"
+- - :note: 57
+    :beat: "000"
+  - :note: 66
+    :beat: "1100"
+  - :note: 55
+    :beat: "00000000110"
+  - :note: 61
+    :beat: "0000"
+- - :note: 52
+    :beat: "00110"
+  - :note: 67
+    :beat: "0000"
+  - :note: 67
+    :beat: "010000010101"
+  - :note: 49
+    :beat: "0001"
+- - :note: 56
+    :beat: "01010000"
+  - :note: 62
+    :beat: "110"
+  - :note: 59
+    :beat: "01010000"
+  - :note: 56
+    :beat: "0010"

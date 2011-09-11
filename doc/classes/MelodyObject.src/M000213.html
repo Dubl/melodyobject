@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>passchildrensdata (MelodyObject)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File Mo-h-e.rb, line 391</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">passchildrensdata</span>
+      <span class="ruby-comment cmt">#~ $fyl.puts  &quot;              so how many children does #{self.name} think it has?: #{@children.length}&quot;</span>
+      <span class="ruby-identifier">data</span>=<span class="ruby-constant">Bouncer</span>.<span class="ruby-identifier">new</span>
+      <span class="ruby-identifier">data</span>.<span class="ruby-identifier">val</span>=<span class="ruby-constant">Hash</span>.<span class="ruby-identifier">new</span>
+      <span class="ruby-ivar">@children</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">i</span><span class="ruby-operator">|</span>
+          <span class="ruby-comment cmt">#~ $fyl.puts &quot;   in passchildrensdata, (child) #{i.name}'s status is #{statussituation(i)}&quot;</span>
+        <span class="ruby-keyword kw">case</span> <span class="ruby-identifier">statussituation</span>(<span class="ruby-identifier">i</span>)
+            
+          <span class="ruby-keyword kw">when</span> {<span class="ruby-identifier">:wait=</span><span class="ruby-operator">&gt;</span><span class="ruby-identifier">:master</span>},{<span class="ruby-identifier">:wait=</span><span class="ruby-operator">&gt;</span><span class="ruby-identifier">:slave</span>},{<span class="ruby-identifier">:wait=</span><span class="ruby-operator">&gt;</span><span class="ruby-identifier">:free</span>}
+              <span class="ruby-comment cmt">#nochange</span>
+              <span class="ruby-comment cmt">#nochange</span>
+              <span class="ruby-comment cmt">#stopdata</span>
+          
+          <span class="ruby-keyword kw">when</span> {<span class="ruby-identifier">:notdone=</span><span class="ruby-operator">&gt;</span><span class="ruby-identifier">:free</span>},{<span class="ruby-identifier">:notdone=</span><span class="ruby-operator">&gt;</span><span class="ruby-identifier">:slave</span>},{<span class="ruby-identifier">:notdone=</span><span class="ruby-operator">&gt;</span><span class="ruby-identifier">:master</span>}
+              <span class="ruby-comment cmt">#nochange</span>
+              <span class="ruby-comment cmt">#nochange</span>
+         
+              <span class="ruby-identifier">data</span>.<span class="ruby-identifier">val</span>[<span class="ruby-identifier">i</span>]=<span class="ruby-ivar">@childhash</span>[<span class="ruby-identifier">i</span>]
+          <span class="ruby-keyword kw">when</span> {<span class="ruby-identifier">:done=</span><span class="ruby-operator">&gt;</span><span class="ruby-identifier">:master</span>}
+          <span class="ruby-comment cmt">#~ puts &quot;#{i.name} is done bitch&quot;</span>
+              <span class="ruby-comment cmt">#nochange</span>
+              
+              <span class="ruby-ivar">@status</span>=<span class="ruby-identifier">:done</span>
+              <span class="ruby-identifier">data</span>.<span class="ruby-identifier">val</span>[<span class="ruby-identifier">i</span>]=<span class="ruby-ivar">@childhash</span>[<span class="ruby-identifier">i</span>]
+                                   <span class="ruby-comment cmt">#~ @tripped=false</span>
+                      <span class="ruby-comment cmt">#~ @gotimeobject.curraryval=0</span>
+          <span class="ruby-keyword kw">when</span> {<span class="ruby-identifier">:done=</span><span class="ruby-operator">&gt;</span><span class="ruby-identifier">:slave</span>}
+              <span class="ruby-identifier">i</span>.<span class="ruby-identifier">currentchild</span>=<span class="ruby-value">0</span>
+              <span class="ruby-identifier">i</span>.<span class="ruby-identifier">status</span>=<span class="ruby-identifier">:notdone</span>
+              <span class="ruby-comment cmt">#nochange to self</span>
+              <span class="ruby-identifier">data</span>.<span class="ruby-identifier">val</span>[<span class="ruby-identifier">i</span>]=<span class="ruby-ivar">@childhash</span>[<span class="ruby-identifier">i</span>]
+              <span class="ruby-identifier">i</span>.<span class="ruby-identifier">detrip</span>
+
+        <span class="ruby-keyword kw">end</span>
+        
+      <span class="ruby-keyword kw">end</span>
+    
+    <span class="ruby-identifier">pass</span>(<span class="ruby-identifier">data</span>) <span class="ruby-comment cmt">#unless data.val.empty?</span>
+    
+    <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

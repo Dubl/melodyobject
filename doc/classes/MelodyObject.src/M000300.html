@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>setsituations (MelodyObject)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File Mo_h_hc.rb, line 377</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">setsituations</span>(<span class="ruby-identifier">child</span>)
+    <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">child</span>.<span class="ruby-identifier">status</span><span class="ruby-operator">==</span><span class="ruby-identifier">:done</span>
+     <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">children</span>.<span class="ruby-identifier">length</span><span class="ruby-operator">==</span><span class="ruby-value">1</span>
+       <span class="ruby-identifier">child</span>.<span class="ruby-identifier">situation</span>=<span class="ruby-identifier">:master</span>
+     <span class="ruby-keyword kw">else</span>
+      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">child</span>.<span class="ruby-identifier">situation</span><span class="ruby-operator">==</span><span class="ruby-identifier">:free</span>
+        
+        <span class="ruby-identifier">someone_else_is_a_slave</span>=<span class="ruby-keyword kw">false</span>
+        
+        <span class="ruby-ivar">@children</span>.<span class="ruby-identifier">each</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">d</span><span class="ruby-operator">|</span>
+          <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">d</span><span class="ruby-operator">==</span><span class="ruby-identifier">child</span>
+            <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">d</span>.<span class="ruby-identifier">situation</span><span class="ruby-operator">==</span><span class="ruby-identifier">:slave</span>
+              <span class="ruby-identifier">someone_else_is_a_slave</span>=<span class="ruby-keyword kw">true</span> <span class="ruby-comment cmt">#someone else is a slave! you're either a slave or</span>
+              <span class="ruby-comment cmt">#a master!</span>
+            <span class="ruby-keyword kw">end</span>
+          <span class="ruby-keyword kw">end</span>
+        }
+        
+        <span class="ruby-keyword kw">if</span> <span class="ruby-keyword kw">not</span> <span class="ruby-identifier">someone_else_is_a_slave</span> <span class="ruby-comment cmt">#no one else is a slave- you're a slave!</span>
+          <span class="ruby-identifier">child</span>.<span class="ruby-identifier">situation</span>=<span class="ruby-identifier">:slave</span>
+        <span class="ruby-keyword kw">else</span>
+          <span class="ruby-comment cmt">#someone else is a slave- are you a slave or maybe the master? youre the master if </span>
+          <span class="ruby-comment cmt">#everyone else is a slave</span>
+          <span class="ruby-identifier">everyone_else_a_slave</span>=<span class="ruby-keyword kw">true</span> <span class="ruby-comment cmt">#assume everyone is until someone says theyre not</span>
+           <span class="ruby-ivar">@children</span>.<span class="ruby-identifier">each</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">d</span><span class="ruby-operator">|</span>
+              <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">d</span><span class="ruby-operator">==</span><span class="ruby-identifier">child</span>
+                  <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">d</span>.<span class="ruby-identifier">situation!</span>=<span class="ruby-identifier">:slave</span>
+                    <span class="ruby-identifier">everyone_else_a_slave</span>=<span class="ruby-keyword kw">false</span> <span class="ruby-comment cmt">#not everyone else is a slave, so youre a slave</span>
+                  <span class="ruby-keyword kw">end</span>
+              <span class="ruby-keyword kw">end</span>
+            }
+            
+            <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">everyone_else_a_slave</span> 
+              <span class="ruby-identifier">child</span>.<span class="ruby-identifier">situation</span>=<span class="ruby-identifier">:master</span>
+            <span class="ruby-keyword kw">else</span>
+              <span class="ruby-identifier">child</span>.<span class="ruby-identifier">situation</span>=<span class="ruby-identifier">:slave</span>
+            <span class="ruby-keyword kw">end</span>
+            
+        <span class="ruby-keyword kw">end</span>
+ 
+      <span class="ruby-keyword kw">end</span>
+     <span class="ruby-keyword kw">end</span>
+     
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

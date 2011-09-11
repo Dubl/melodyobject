@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>status (GotimeObject)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File Mo_h_hb.rb, line 59</span>
+ <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">status</span>
+  <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@gotimary</span>.<span class="ruby-identifier">nil?</span>
+   <span class="ruby-keyword kw">if</span> <span class="ruby-constant">Midistack</span>.<span class="ruby-identifier">ticker</span><span class="ruby-operator">==</span><span class="ruby-value">0</span>
+     <span class="ruby-identifier">puts</span> <span class="ruby-value str">'zero'</span>
+     <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">true</span> 
+     <span class="ruby-keyword kw">else</span>
+       <span class="ruby-comment cmt">#~ puts 'slipped'</span>
+    <span class="ruby-identifier">x</span>=<span class="ruby-constant">Midistack</span>.<span class="ruby-identifier">ticker</span><span class="ruby-operator">%</span><span class="ruby-ivar">@internalgranularity</span><span class="ruby-operator">==</span><span class="ruby-value">0</span>
+    <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">x</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">puts</span> <span class="ruby-value str">'yeh'</span> <span class="ruby-keyword kw">end</span>
+     <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">x</span>
+   <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">else</span>
+   <span class="ruby-comment cmt">#~ puts &quot;mt:#{Midistack.ticker} os:#{@offset} cv#{@curraryval}  cvv#{@gotimary[@curraryval]}  t/f: #{Midistack.ticker-@offset==@gotimary[@curraryval]-1}&quot;</span>
+   <span class="ruby-comment cmt">#~ $fyl.puts &quot; #{@offset}, #{@curraryval}, len:#{@gotimary.length} #{@gotimary[@curraryval]}&quot;</span>
+   <span class="ruby-comment cmt">#~ return Midistack.ticker-@offset==@gotimary[@curraryval]-1</span>
+ <span class="ruby-keyword kw">end</span>
+<span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>
