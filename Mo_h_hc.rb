@@ -6,11 +6,9 @@ include Level_two
 #~ require './lib/midiator/interface.rb'
 class Array
   def alterindx(hash)
+
     self.each{|t| 
-      puts "ho #{hash[t.val]}"} 
-puts '--'
-    self.each{|t| 
-      puts "ho #{hash[t.val]}"
+ #     puts "ho #{hash[t.val]}"
       t.val=hash[t.val]||0+t.val}
   end
 end
@@ -27,16 +25,16 @@ class Bouncer
   attr_accessor :sender
   attr_accessor :chn
   
-  def initialize(packet=nil,chn=0,leg=4)
-    @running=true
-    @inc=0
-    @turned_on=false
-    @val=packet
-    @chn=chn
-    leg=4 if leg.nil?
-    @leng=leg
-    #~ puts @leng
-  end
+def initialize(packet=nil,chn=0,leg=4)
+  @running=true
+  @inc=0
+  @turned_on=false
+  @val=packet
+  @chn=chn
+  leg=4 if leg.nil?
+  @leng=leg
+  #~ puts @leng
+end
   
  def uf
     Marshal::load(Marshal.dump(self))
@@ -170,6 +168,44 @@ class Midistack
   
 end
 
+class FlagObject
+  
+  attr_accessor :currentchildren
+  attr_accessor :childrenaelist
+  attr_accessor :childrenaeattriblist
+  attr_accessor :versions
+  
+  
+  def initialize(vrsns)
+    @currentchildren=1
+    @versions=vrsns
+  end
+
+
+end
+
+class  ParamObjs
+end
+
+class Alter_Pitch_Paramobj<ParamObjs
+  
+  attr_accessor :x
+  attr_accessor :y
+  
+  def initialize(amt)
+    @x=amt
+    @y=amt
+  end
+  def rslt
+    puts "rrs #{@x}"
+    rtrn=@x
+    @x+=@y
+    puts "rrt #{@x}"
+    return rtrn
+  end
+end
+
+
 
 
 class MelodyObject
@@ -177,6 +213,7 @@ class MelodyObject
    attr_accessor :val
    attr_accessor :children
    attr_accessor :name
+   attr_accessor :nayme
    attr_accessor :currentchild
    attr_accessor :parent 
    attr_accessor :status
@@ -190,17 +227,231 @@ class MelodyObject
    attr_accessor :place
    attr_accessor :started
    attr_accessor :offset
+   attr_accessor :flag
+   attr_accessor :childrenlist
+
+
+#def versionize(versions)
+#@flag=FlagObject.new(versions)
+#@flag.childrenaelist=[]
+#@flag.childrenaeattriblist=[]
+#@flag.childrenaelist[0]=@children
+#1.upto(versions) do |v|
+# tmpchildren=anewchildren
+#  @flag.childrenaelist[v]=tmpchildren
+#  @flag.childrenaeattriblist[v]=Hash.new
+#end
+#@children=@flag.childrenaelist[1]
+#end
+
+def versionize(versions)
+  s=Section.new
+  
+end
+    
+
+
+
+
+
+
+
+def alter_versions_all(alter_pitch,alter_pitch_paramobj,amt)
+b=Object.const_get(alter_pitch_paramobj)
+x=b.new(amt)
+@flag.childrenaelist.each do |currentchildren|
+  unless currentchildren==@children
+    qq=x.rslt
+    puts qq    
+    currentchildren.each do |currentchildrencurrentchild|
+      puts 'starting'
+
+      currentchildrencurrentchild.send(alter_pitch,qq)
+      puts 'ending'
+    end
+  end
+end
+end
+
+def alter_pitch(rsltamt)
+  if self.class==Ender
+    @val+=rsltamt
+    puts @val
+  else
+  unless @children==nil or @children.empty?
+    @children.each do |cd|
+      cd.alter_pitch(rsltamt)
+    end
+  end
+  end
+end
+  
+def anewchildren
+  rslt=Section.new
+  @children.each_with_index do |kid,i|
+#    p "b4 #{kid.val} val #{kid.status}"
+    if kid.class==Ender then
+    rslt.addon kid.clone
+  else
+    rslt.addon kid.uf
+  end
+    kid.parent=self
+ #   p kid.parent.name
+ #   kid.name=i.to_s
+ #   p "ftr #{rslt[i].val} val #{rslt[i].status}"
+    
+  end
+  return rslt
+end
+  
+  
+  
+  
+=begin
+def anewchildren
+  rslt=[]
+  @children.each_with_index do |kid,i|
+#    p "b4 #{kid.val} val #{kid.status}"
+    if kid.class==Ender then
+    rslt.push kid.clone
+  else
+    rslt.push kid.uf
+  end
+    kid.parent=self
+    p kid.parent.name
+    kid.name=i.to_s
+ #   p "ftr #{rslt[i].val} val #{rslt[i].status}"
+    
+  end
+  return rslt
+end
+=end
+
+
+
+
+def klean
+unless @children==nil
+  if @children.length==1 and @children[0].class!=Ender and @parent!=nil
+    #tmp=@children[0]
+    @children[0].parent=@parent
+    @parent.children[parent.children.index(self)]=@children[0]       #children.each {|chile| chile.parent=self}    
+  end
+   @children.each {|chyle| chyle.klean}
+    
+end    
+end
+
+def threadout(*arr)
+     arr.push self.uf
+
+     newsec=t(*arr)
+     if self.parent==nil
+       s=Section.new
+       s.addon(newsec)
+       return s
+     else
+      self.parent.children[parent.children.index(self)]=newsec
+      newsec.parent=self.parent
+   #   p "a  "+newsec.name
+    #  p "a  "+newsec.parent.name
+      return newsec
+     end
+end
+
+
+def repl(replacer)
+  self.parent.children[parent.children.index(self)]=replacer # unless self.parent==nil
+  replacer.parent=self.parent # unless self.parent==nil
+  return replacer
+end
+
+
+def fynd!(addy)
+
+  innerfynd!(addy)
+  return $ss
+end
+
+
+
+def innerfynd!(addy)
+  #puts "#{self.class.to_s} #{@name}" if @name.to_s.length<6 and self.class!=Ender
+  unless @children.empty?
+      @children.each do |d|
+          if d.name==addy
+
+            $ss=d.uf
+            $ss.parent=nil
+          else
+            d.innerfynd!(addy)
+          end
+      end
+  else
+    # p 'j'
+  end
+
+end
+
+def fynd(addy)
+
+  innerfynd(addy)
+  return $ss
+end
+
+
+
+def innerfynd(addy)
+  unless @children.empty?
+      @children.each do |d|
+          if d.name==addy
+
+            $ss=d
+          else
+            d.innerfynd(addy)
+          end
+      end
+  else
+    # p 'j'
+  end
+
+end
+
+
+
+
+
+
+
+  def nayme(naymelevel="1")
+    @name=naymelevel
+    unless @children.empty?
+      unless @children[0].class==Ender
+        lastnum=naymelevel[naymelevel.length-1].to_i
+
+          inc=1
+    @children.each do |kd|
+
+       d=naymelevel+'.'+inc.to_s #after 9 levels, breaks...   
+      
+      kd.nayme(d)
+      
+      inc+=1
+    end
+      end
+    end
+  end
    
    def bottomlevel
-    p 'bottomlevel'
+  #  p 'bottomlevel'
      bl=[]
      self.innerbottomlevel(bl)
-     puts 'now bl'
+  #   puts 'now bl'
      return bl
    end
    
    def innerbottomlevel(bl)  
-     p 'innerbottomlevel'
+  #   p 'innerbottomlevel'
        unless @children.empty?
           @children.each do |d|
             if d.class==Ender
@@ -218,14 +469,14 @@ class MelodyObject
    
    
    def bottomlevel!
-     p 'bottomlevel!'
+ #    p 'bottomlevel!'
      bl=[]
      self.innerbottomlevel!(bl)
      return bl
    end
    
    def innerbottomlevel!(bl)
-     p 'innerbottomlevel!'
+   #  p 'innerbottomlevel!'
      unless @children.empty?
         @children.each do |d|
           if d.class==Ender
@@ -314,7 +565,8 @@ p 'alteri'
                   
 
    def initialize(seder=0)
-     @children=[]   
+     @children=[]
+     @childrenlist=[]  
      @name=self.class.to_s
      @currentchild=0
      @situation=:free
@@ -341,6 +593,7 @@ p 'alteri'
     end
   
     def go_down
+ #    $namarr.push @name if children[0]==nil or children[0].class==Ender #@name.length==$watchlevel ##
                 #~ $fyl.puts "   in go_down, #{self.name}'s status is #{statusempties}"
                 #if first time going down, set the gotime objects start position
  
@@ -359,7 +612,7 @@ p 'alteri'
             @status=:wait
             
           when {Threadset=>:childrennotempty}
-          
+        #  puts 'uo'
            @children.each {|i| i.go_down}
             
         end
@@ -387,7 +640,7 @@ p 'alteri'
     end
     
     def checkwhere
-    #~ puts "checking where, self is #{self.class}"
+  #   puts "checking where, self is #{self.class} val is #{self.val} status is #{self.status}"
         if self.class==Threadset then
         @place=:both
         elsif self.class==Section then
@@ -474,10 +727,29 @@ end
 #~ puts data.val
 #~ puts "at top" if @parent.nil?
               cc.checkwhere
+              #####################
+          #    puts "#{childtypestatus} #{@children[@currentchild].val}" if @children[@currentchild].class==Ender and @children[@currentchild].val!=0
+             # if @children[@currentchild].val!=0 then 
+            #    case
+                #  when @children[@currentchild].val!=nil then
+             #   @children.each{|k| puts "lower #{k.val} #{k.status}" unless k.val==0}
+              #  puts "currchildren #{@flag.currentchildren}" unless @flag==nil    
+            #  when @children[@currentchild].children[0].val!=nil then
+             #   @children[@currentchild].children.each{|k| puts "hier #{k.val} #{k.status}" unless k.val==0}
+            #  end
+            #end
               
+              
+              unless @parent.nil?
+                if @parent.name=='1' 
+               puts "#{@name} #{childtypestatus}" 
+             else
+               puts @parent.name
+             end
+           end
               case childtypestatus
                   when {:lastchild=>:done}
-                    #nochange
+                   
                     
                                     #~ $fyl.puts "             in checkchildstatus, #{self.name}'s status changing to :done"
                     case cc.place
@@ -486,16 +758,47 @@ end
                     when :both
                       @status=:done
                       @currentchild=0
-                      
+                      p "WOW"
                       @children.each {|c|
                           c.status=:notdone
                           c.started=false
                           }
+                          if @flag==nil then puts 'nil' else puts (@flag.currentchildren+1) end
+                          if @flag==nil then puts 'nil' else puts (@flag.versions+1) end
+
+                         if @flag==nil then puts 'nil' else puts "HI #{(@flag.currentchildren+1) % (@flag.versions+1)}" end
+                          @flag.currentchildren=(@flag.currentchildren+1) % (@flag.versions+1) unless @flag==nil #0 unless @flag==nil# 
+                          @children=@flag.childrenaelist[@flag.currentchildren] unless @flag==nil #0] unless @flag==nil #          
+                         
+                           @children.each {|c|
+                                c.status=:notdone
+                                c.started=false
+                                }    
+                          
+                          
+                          
+                          
+                          @children.each {|i|
+                            puts "both #{i.val} #{i.status}"} unless @flag==nil
+                        puts "currchildren #{@flag.currentchildren}" unless @flag==nil    
+                         puts " YOOOOOOOO   #{@flag.currentchildren}" unless @flag==nil
+                          unless @flag==nil
+                            @flag.childrenaelist[@flag.currentchildren].each {|s| puts s.status; puts s.val}
+                                            end
                           
                     when :ending
                       @status=:done
                       @currentchild=0
+                        p "WOW"
+                      #maybe i just need to add a clause here which says: change @children (if there's a flag on this object)
+                      #could it be that fucking easy?
                       
+                      #and then on the front end, create
+                      #@childrenlist full of versions of @children
+                      #and @flag which will contain the index of what children is current
+                      #
+                      #
+                      #
                         @children.each {|c|
                           c.status=:notdone
                           c.started=false
@@ -503,6 +806,28 @@ end
                       
                       
                       data=Bouncer.new
+                       if @flag==nil then puts 'nil' else puts (@flag.currentchildren+1) end
+                       if @flag==nil then puts 'nil' else puts (@flag.versions+1) end
+
+                      if @flag==nil then puts 'nil' else puts "HI #{(@flag.currentchildren+1) % (@flag.versions+1)}" end
+                       @flag.currentchildren=(@flag.currentchildren+1) % (@flag.versions+1) unless @flag==nil # unless @flag==nil#  =
+                       puts " YOOOOOOOO   #{@flag.currentchildren}" unless @flag==nil
+                       @children=@flag.childrenaelist[@flag.currentchildren] unless @flag==nil #0] unless @flag==nil #          
+                      
+                        @children.each {|c|
+                             c.status=:notdone
+                             c.started=false
+                             }
+                      
+                      
+                   #    @children.each {|i|
+                  #       puts "ending #{i.val} #{i.status}"} unless @flag==nil
+                 #    puts "currchildren #{@flag.currentchildren}" unless @flag==nil
+                 #     unless @flag==nil
+                  #      @flag.childrenaelist[@flag.currentchildren].each {|s| puts s.status; puts s.val}
+                   #                     end
+                      
+                      
                     when :middle
                       @status=:wait
                     end
@@ -511,7 +836,7 @@ end
                     
                   when {:lastchild=>:notdone}
                     #~ nochange
-                          #~ $fyl.puts "             in checkchildstatus, #{self.name}'s status changing to :notdone"
+                          #puts "             in checkchildstatus, #{self.name}'s status changing to :notdone"
                        case cc.place
                        when :starting
                          @status=:notdone
@@ -710,6 +1035,7 @@ end
     
     def cc
       @children[@currentchild]
+
     end
 
 end
@@ -778,10 +1104,12 @@ class Ender<MelodyObject
    end
     
    def go_down
-           #~ $fyl.puts "   in go_down, #{self.name}'s value is #{@val}"
+     
+  #    puts "   in go_down, #{self.name}'s value is #{@val}"
+  #   puts "#{@parent.flag.currentchildren} is currchildren" unless @parent.flag==nil
      @status=:done
      envelope=Bouncer.new(@val,@chn,@leng)
-     #~ puts "enderval: #{@val}"
+   #   puts "enderval: #{@val} #{@status}"
      @parent.go_up(envelope)
    end
    

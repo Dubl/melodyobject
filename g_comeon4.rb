@@ -120,7 +120,189 @@ def sta
      $fyl.puts timingary.join(',')
   return topp
 
+end
+
+def shortstroke(notetype=:all,chn=3)
+  stopp=Section.new
+  4.times do
+  gopp=Section.new
+  #popp=Section.new
+  gopp.create_notes(rand(16)+1,rand(2)+1,:rand,notetype)
+  gopp.makechannel(chn)
+  stopp.addon(gopp)
+  p=gopp.threadout(evener(rand(32)+1,:m))
+  q=p.threadout(evener(32,:m))
+  q.repl(q.a(2))
   end
+  return stopp
+end
+
+def longstroke(notetype=:low,chn=1)
+  stopp=Section.new
+  4.times do
+  gopp=Section.new
+  #popp=Section.new
+  gopp.create_notes(rand(16)+1,rand(4)+1,:rand,notetype)
+  gopp.makechannel(chn)
+  stopp.addon(gopp)
+  q=gopp.threadout(evener(64,:m))
+  q.repl(q.a(2))
+  end
+  return stopp
+end
+
+
+def shortystroke(notetype=:all,chn=3)
+  stopp=Section.new
+  1.times do
+  gopp=Section.new
+  #popp=Section.new
+  gopp.create_notes(rand(12)+16,(rand(8)+1)*(rand(3)+1),:rand,notetype)
+  gopp.makechannel(chn)
+  stopp.addon(gopp)
+  p=gopp.threadout(evener(rand(8)+16,:m))
+  q=p.threadout(evener(32,:m))
+  #q.repl(q.a(2))
+  end
+  return stopp
+end
+
+def longystroke(notetype=:low,chn=1)
+  stopp=Section.new
+  1.times do
+  gopp=Section.new
+  #popp=Section.new
+  gopp.create_notes(rand(12)+16,(rand(8)+1)*(rand(3)+1),:rand,notetype)
+  gopp.makechannel(chn)
+  stopp.addon(gopp)
+  q=gopp.threadout(evener(64,:m))
+  #q.repl(q.a(2))
+  end
+  return stopp
+end
+
+
+def shitystroke(notetype=:mid,chn=1)
+  stopp=Section.new
+  4.times do
+  gopp=Section.new
+  #popp=Section.new
+  gopp.create_notes(7,1,:rand,notetype)
+  gopp.makechannel(chn)
+  q=gopp.threadout(evener(rand(4)+2,:m))
+  stopp.addon(q)
+  q.repl(q.a(rand(3)+1))
+  end
+  stopp.threadout(evener(32))
+  #stopp=stopp.a(4)
+  return stopp
+end
+
+def shityrstroke(notetype=:mid,chn=1)
+  stopp=Section.new
+  4.times do
+  gopp=Section.new
+  #popp=Section.new
+  gopp.create_notes(7,(rand(3)+1)*3,:rand,notetype)
+  gopp.makechannel(chn)
+  q=gopp.threadout(evener(rand(4)+2,:m))
+  stopp.addon(q)
+  q.repl(q.a(rand(3)+1))
+  end
+  stopp.threadout(evener(32))
+  #stopp=stopp.a(4)
+  return stopp
+end
+
+def bas(n=:mid,ch=3)
+  a=Section.new
+  2.times do
+    f=Section.new
+    f.create_notes(2,1,:even,n)
+     f.versionize 4
+       f.alter_versions_all(:alter_pitch,"Alter_Pitch_Paramobj",7)
+    f.makechannel(ch)
+    a.addon f
+  end
+  a.nayme
+ 
+
+  b=a.threadout(evener(8,:m))
+  return b
+end
+
+
+def shitvstroke(notetype=:mid,chn=1)
+  stopp=Section.new
+  4.times do
+  gopp=Section.new
+  #popp=Section.new
+  gopp.create_notes(7,2,:rand,notetype)
+  gopp.makechannel(chn)
+  p 'one'
+  gopp.versionize 4
+  p 'two'
+  gopp.alter_versions_all(:alter_pitch,"Alter_Pitch_Paramobj",7)
+  p 'three'
+  q=gopp.threadout(evener(32,:m))
+  p 'four'
+  stopp.addon(q)
+  p 'five'
+  #q.repl(q.a(rand(3)+1))
+  p 'six'
+  end
+  p 'seven'
+  #stopp.threadout(evener(64))
+  #stopp=stopp.a(4)
+  return stopp
+end
+
+
+def shitstroke(notetype=:mid,chn=1)
+  stopp=Section.new
+  4.times do
+  gopp=Section.new
+  #popp=Section.new
+  gopp.create_notes(7,2,:rand,notetype)
+  gopp.makechannel(chn)
+  q=gopp.threadout(evener(rand(16)+2,:m))
+  stopp.addon(q)
+  q.repl(q.a(rand(3)+1))
+  end
+  stopp.threadout(evener(16,:m))
+  stopp=stopp.a(4)
+  return stopp
+end
+
+def bothstroke(frst,scnd,chn1,chn2)
+topp=Section.new
+kopp=shortstroke(frst,chn1)
+lopp=longstroke(scnd,chn2)
+
+topp.addon(t(kopp,lopp))
+return topp
+end
+
+
+
+def bothystroke(frst,scnd,chn1,chn2)
+topp=Section.new
+kopp=shortystroke(frst,chn1)
+lopp=longystroke(scnd,chn2)
+
+topp.addon(t(kopp,lopp))
+return topp
+end
+
+
+
+
+
+
+
+
+
+
 
 def stedy
     timingary=[]
@@ -136,15 +318,28 @@ def stedy
   return topp
   end
 
+def evener(lengthh,sit=:f)
+   tmpar=[]
+  lengthh.times do |f|
+    tmpar.push 0
+  end
+  rtrn=Section.new
+  rtrn.create_specific_notes(tmpar,1)
+  rtrn.situation=:master if sit==:m
+  return rtrn
+end
 
 def t(*arr)
   don=Section.new
   aadd=Threadset.new
+  #p "hi #{arr.class}"
+  #       arr.each {|d| p d.class}
   arr.each{|s|
     aadd.addon(s)}
   don.addon(aadd)
 return don
   end
+
 
 def s(*arr)
   don=Section.new
@@ -545,9 +740,16 @@ loaded=stopp
 end
 
 
-def l_load(obj)
+def l_load(obj,opt=1)
   stopp=Section.new
-   a=File.open("trax/eoms/#{obj}.dat") do |g|
+case opt
+when 1
+  folder='eoms'
+when 2
+  folder='xoms'
+end
+
+   a=File.open("trax/#{folder}/#{obj}.dat") do |g|
      Marshal.load(g)
    end
 stopp=a

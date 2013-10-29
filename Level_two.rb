@@ -205,6 +205,7 @@ nam=self.inspect
 end                          
 
 def to_json
+  
 $jfyl.puts "{id:0,item:["
  to_jsonn
  $jfyl.puts " ]}"
@@ -215,14 +216,14 @@ def to_jsonn(lvl=0, spacer="",incchk=false)
        nokids=@children.empty?
        if nokids then
 
-         str=spacer+"{id:#{lvl},text:\""+self.to_s.gsub(/[#<>]/,'')+" #{@status} #{@val}"+"\"}"
+         str=spacer+"{id:#{lvl},text:\""+"#{@name} #{self.class.to_s} #{childtypestatus unless self.class==Ender}"+"\"}"#str=spacer+"{id:#{lvl},text:\""+self.to_s.gsub(/[#<>]/,'')+" #{@status} #{@val}"+"\"}"
          $jfyl.puts str
        else
           case lvl
             when 0
-                        str="{id:#{$lvl},text:\"#{Midistack.ticker}\","
+                        str="{id:#{$lvl},text:\"#{@name} #{self.class.to_s}\","
             else
-                        str=spacer+"{id:#{$lvl},text:\""+self.to_s.gsub(/[#<>]/,'')+" #{@status} #{@situation} #{@place} child:#{@currentchild}"+"\","
+              str=spacer+"{id:#{lvl},text:\""+"#{@name} #{self.class.to_s} #{childtypestatus unless self.class==Ender}"+"\","         # str=spacer+"{id:#{$lvl},text:\""+self.to_s.gsub(/[#<>]/,'')+" #{@status} #{@situation} #{@place} child:#{@currentchild}"+"\","
           end
               $jfyl.puts str
               spacer=spacer+'            '
@@ -263,7 +264,7 @@ def a(num)
      return x
    end
    
-def create_notes(num,type=:all)
+def create_notes(num,len=4,lentype=:even,type=:all)
      
      num.times do
             bluci=rand(7)*7 % 12 + rand(8)*12
@@ -273,7 +274,8 @@ def create_notes(num,type=:all)
             while bluci>100
               bluci-=12
             end
-            addon(Ender.new(bluci))
+            if lentype==:rand then lenn=rand(len)+(1) else lenn=len end
+            addon(Ender.new(bluci,lenn))
      end
 
     case type
@@ -299,17 +301,15 @@ def create_notes(num,type=:all)
         @children.each do |i|
           
           while i.val>47
-            i.val-=12
+            i.val-=10
           end
           while i.val<36
-            i.val+=12
+            i.val+=10
           end
           
         end
       end
-      
-      @children.each do |r|
-      end
+    
 
    end
    
@@ -368,6 +368,16 @@ def create_specific_notes(arr,len=12)
      end
 end
    
+def altr(type=:t)
+ case type
+ when :t
+   x=bottomlevel!
+   
+ end
+
+
+end
+   
 def sectionize(hash)
    s=Section.new
    notez=[]
@@ -384,17 +394,22 @@ def sectionize(hash)
        s.addon(stemp)
        end
    return s
-   end
+end
    
-def scayle(ar,v)
+def scayle(times,wich=:both)
+  ar=bottomlevel!
   ar.each do |i|
-  x=0
-  i.each do
-  i[x]=i[x]*v
-  x+=1
+    case wich
+    when :both
+      i.space*=times
+      i.leng*=times
+    when :space
+      i.space*=times
+    when :length
+      i.leng*=times
+    end
   end
-  end
-  end
+end
    
    def makechannel(chn)
      if self.class==Ender
