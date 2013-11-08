@@ -1,7 +1,0 @@
-Melody Object is a programmatic AI composer. It uses Ben Bleything's Midiator, but can easily use another tool like unimidi (it only has two midi methods: "note on" and "note off".
-
-The tool is based on a core architecture of 'Sections' and 'Threadsets'. Sections are groups of notes in serial, and Threadsets are groups of notes in parallel. So if you make a Section of drum hits, and a Section of bass notes, and combine them in a Threadset, they play like two tracks. If one is shorter than another it will repeat until the longer one ends. Threadsets and Sections are hierarchical, allowing you to quickly recursively make complex melodies and rhythms. 
-
-You can create your own logic to fill in, group, and order Section and Threadset objects, needing only the 't' and 's' methods. Add them all under one top-level Section object and then invoke the 'play' method on it.
-
-There are several examples of different methods in the 'songs' folder, including methods that serialize randomly-generated into editable yaml files and pure data files. Also included are visualization methods, including a web-based tree view control that reads a json representation of your Section object (and all descendant sections and threadsets)
